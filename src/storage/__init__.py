@@ -1,2 +1,3 @@
-from .handlers import FileHandler, IStorageHandler
+from .handlers import FileStorage, IStorage
 from .constants import DataType
+from .stubs import SuccessMessage

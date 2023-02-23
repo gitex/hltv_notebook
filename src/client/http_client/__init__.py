@@ -1,2 +1,2 @@
 from .base import IHTTPClient, Method, Response
-from .impl import HTTPClient
+from .requests_impl import RequestsHTTPClient

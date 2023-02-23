@@ -6,7 +6,8 @@ from .base import IHTTPClient, Response
 
 logger = logging.getLogger('http_client')
 
-class HTTPClient(IHTTPClient):
+
+class RequestsHTTPClient(IHTTPClient):
     def __init__(self, base_url: str, headers: dict | None = None, cookies: dict | None = None, proxy: str = '',
                  verify_certificate: bool = True):
         super().__init__(base_url, headers, cookies, proxy, verify_certificate)
@@ -91,7 +92,7 @@ class HTTPClient(IHTTPClient):
         return Response(
             ok=response.ok,
             data=response_json,
-            content=response.content,
+            content=response.content.decode(),
             status_code=response.status_code,
         )
 

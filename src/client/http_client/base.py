@@ -7,7 +7,7 @@ class Response:
     ok: bool
     status_code: int
     data: dict
-    content: bytes
+    content: str
 
 
 class Method:

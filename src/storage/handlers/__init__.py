@@ -1,2 +1,2 @@
-from .interfaces import IStorageHandler
-from .file import FileHandler
+from .interfaces import IStorage
+from .file import FileStorage

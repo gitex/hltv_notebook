@@ -1,29 +1,26 @@
 from dataclasses import dataclass
 import logging
+from pathlib import Path
 
 from storage.utils import generate_filename
 from storage.constants import DataType
-from settings import DATA_DIR
+from storage.stubs import SuccessMessage
 
-from .interfaces import IStorageHandler
-
-
-HTML_DIR = DATA_DIR / 'html'
+from .interfaces import IStorage
 
 
 logger = logging.getLogger('storage')
 
 
 @dataclass
-class FileHandler(IStorageHandler):
-    data: str
+class FileStorage(IStorage):
     data_type: DataType
+    data_dir: Path
 
-    def store(self) -> None:
-        target_dir = HTML_DIR / self.data_type.value
-        target_file = target_dir / generate_filename('html')
+    def store(self, data: str) -> SuccessMessage:
+        target_file = self.data_dir / self.data_type.value / generate_filename('html')
 
-        with open(target_file, 'w') as f:
-            f.write(self.data)
+        with open(target_file, 'wb') as f:
+            f.write(data.encode())
 
-        logger.debug(f'Data was saved into {target_file.absolute()}')
+        return SuccessMessage(f'Successfully stored into {target_file}')

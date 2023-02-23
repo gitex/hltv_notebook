@@ -1,8 +1,17 @@
 from pathlib import Path
+from pydantic import BaseSettings, validator, BaseModel
 
 
-ROOT_DIR = Path(__file__).parent.parent
-DATA_DIR = ROOT_DIR / 'data'
+class PathSettings(BaseSettings):
+    root: Path = Path(__file__).parent.parent
+    data: Path = root / 'data'
+    html: Path = data / 'html'
 
-HLTV_BASE_URL = 'https://www.hltv.org'
-HLTV_DATE_QUERY_FORMAT = '%Y-%m-%d'
+
+class HLTVSettings(BaseSettings):
+    base_url: str = 'https://www.hltv.org'
+
+
+class Settings(BaseSettings):
+    dirs: PathSettings = PathSettings()
+    hltv: HLTVSettings = HLTVSettings()

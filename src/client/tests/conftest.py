@@ -20,5 +20,5 @@ def matches_response(matches_html) -> Response:
         ok=True,
         status_code=200,
         data={},
-        content=matches_html.encode(),
+        content=matches_html,
     )
