@@ -2,8 +2,9 @@ from dependency_injector import providers, containers
 
 from client.http_client import RequestsHTTPClient
 from client import HLTVClient
-from storage import FileStorage, DataType
+from storage.choices import DataType
 from services.download import DownloadMatchesService
+from storage.repositories import HtmlRepository
 
 
 class DownloadMatchesContainer(containers.DeclarativeContainer):
@@ -26,8 +27,8 @@ class DownloadMatchesContainer(containers.DeclarativeContainer):
         http_client=http_client,
     )
 
-    storage = providers.Factory(
-        FileStorage,
+    repository = providers.Factory(
+        HtmlRepository,
         data_type=DataType.MATCHES,
         data_dir=config.dirs.html,
     )
@@ -35,5 +36,5 @@ class DownloadMatchesContainer(containers.DeclarativeContainer):
     service = providers.Factory(
         DownloadMatchesService,
         client=hltv_client,
-        storage=storage,
+        repository=repository,
     )

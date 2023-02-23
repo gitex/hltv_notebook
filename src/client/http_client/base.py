@@ -1,13 +1,15 @@
 from dataclasses import dataclass
 from typing import Protocol
 
+from .stubs import Html
+
 
 @dataclass
 class Response:
     ok: bool
     status_code: int
     data: dict
-    content: str
+    content: Html
 
 
 class Method:
