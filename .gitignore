@@ -1,2 +1,5 @@
-data/*.html
+# IDE
 .idea/
+
+# Data
+data/*.html
