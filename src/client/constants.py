@@ -1,0 +1,1 @@
+QUERY_DATE_FORMAT = '%Y-%m-%d'
