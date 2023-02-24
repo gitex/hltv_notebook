@@ -1,5 +1,5 @@
 from pathlib import Path
-from pydantic import BaseSettings, validator, BaseModel
+from pydantic import BaseSettings
 
 
 class PathSettings(BaseSettings):

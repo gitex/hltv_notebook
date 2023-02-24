@@ -2,7 +2,7 @@ from pathlib import Path
 
 from storage.stubs import URI, Html
 from storage.choices import DataType
-from storage.stubs import SuccessMessage
+from storage.stubs import Identifier, SuccessMessage
 
 
 class IRepository:
@@ -12,11 +12,11 @@ class IRepository:
 
     def prepare(self) -> SuccessMessage: ...
 
-    def get_one(self, identifier: str) -> Html | None: ...
+    def get_one(self, identifier: Identifier) -> Html | None: ...
 
     def get_many(self) -> list[Html]: ...
 
-    def create(self, data: Html) -> SuccessMessage: ...
+    def create(self, data: Html) -> Identifier: ...
 
 
 

@@ -3,9 +3,7 @@ from uuid import uuid4
 
 import pytest
 
-from storage.utils import generate_filename
-from storage.repositories import HtmlRepository
-from storage.choices import DataType
+from storage import generate_filename, HtmlRepository, DataType
 from client.http_client import Response, Html
 
 
@@ -58,9 +56,7 @@ def make_html_files_of_matches(matches_dir, matches_html) -> list[Path]:
     for _ in range(5):
         path = matches_dir / generate_filename('html')
         html_files.append(path)
-
-        with open(path, 'w') as f:
-            f.write(matches_html)
+        path.write_text(matches_html)
 
     return html_files
 
@@ -68,6 +64,11 @@ def make_html_files_of_matches(matches_dir, matches_html) -> list[Path]:
 @pytest.fixture(scope='session')
 def matches_html_repository(data_dir) -> HtmlRepository:
     return HtmlRepository(context=data_dir, data_type=DataType.MATCHES)
+
+
+@pytest.fixture
+def mock_repository(mocker):
+    return mocker.Mock()
 
 
 @pytest.fixture

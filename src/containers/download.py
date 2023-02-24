@@ -5,16 +5,11 @@ from client import HLTVClient
 from storage.choices import DataType
 from services.download import DownloadMatchesService
 from storage.repositories import HtmlRepository
+from settings import Settings
 
 
 class DownloadMatchesContainer(containers.DeclarativeContainer):
-    wiring_config = containers.WiringConfiguration(
-        packages=[
-            'services', 'src.services',
-        ],
-    )
-
-    config = providers.Configuration()
+    config = providers.Configuration(default=Settings().dict())
 
     http_client = providers.Factory(
         RequestsHTTPClient,
@@ -29,8 +24,8 @@ class DownloadMatchesContainer(containers.DeclarativeContainer):
 
     repository = providers.Factory(
         HtmlRepository,
+        context=config.dirs.data,
         data_type=DataType.MATCHES,
-        data_dir=config.dirs.html,
     )
 
     service = providers.Factory(

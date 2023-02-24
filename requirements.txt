@@ -6,3 +6,6 @@ pytest
 click
 dependency-injector>=4.0,<5.0
 pydantic
+jupyter
+lxml
+pytest-mock==3.10.0
