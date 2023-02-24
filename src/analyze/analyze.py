@@ -4,7 +4,7 @@ import pandas as pd
 
 from storage import IRepository, Identifier
 from services.utils import df_from_html
-from .pipeline import Handler, Pipeline
+from .pipeline import Pipeline
 
 
 @dataclass

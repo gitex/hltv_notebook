@@ -1,7 +1,7 @@
 from dependency_injector import providers, containers
 
 from storage import DataType, HtmlRepository
-from services import AnalyzeService
+from analyze import AnalyzeService
 from settings import Settings
 
 

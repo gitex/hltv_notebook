@@ -8,23 +8,26 @@ from .exceptions import PipelineException
 
 
 class Handler(abc.ABC):
-    depends_on: Self | None
+    depends_on: Type[Self] | None
 
     @abc.abstractmethod
     def handle(self, df: pd.DataFrame) -> pd.DataFrame: ...
 
     @classmethod
-    def dependencies(cls):
-        handlers: list[Handler] = []
+    def dependencies(cls) -> list[Type['Handler']]:
+        handlers: list[Type[Handler]] = []
 
-        next_handler: Handler = cls.depends_on
+        if not cls.depends_on:
+            return handlers
+
+        next_handler: Type[Handler] = cls.depends_on
 
         while next_handler:
             handlers.append(next_handler)
 
             next_handler = next_handler.depends_on
 
-        return handlers
+        return handlers[::-1]
 
     def __hash__(self):
         return hash(self.__class__.__name__)
@@ -37,15 +40,18 @@ class Pipeline:
     __dependencies_filled: bool = field(init=False, default=False)
 
     def fill_dependencies(self) -> None:
-        handlers: list[Type[Handler]] = []
+        handlers: set[Type[Handler]] = set()
 
         for handler in self.handlers:
-            if handler.depends_on:
-                handlers += handler.dependencies
+            if handler in handlers:
+                continue
 
-            handlers.append(handler)
+            for dependency in handler.dependencies():
+                handlers.add(dependency)
 
-        self.handlers = handlers
+            handlers.add(handler)
+
+        self.handlers = list(handlers)
         self.__dependencies_filled = True
 
     def handle(self, df: pd.DataFrame) -> pd.DataFrame:
