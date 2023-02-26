@@ -11,7 +11,15 @@ class PathSettings(BaseSettings):
 class HLTVSettings(BaseSettings):
     base_url: str = 'https://www.hltv.org'
 
+    class Config:
+        env_prefix = 'hltv_'
+
 
 class Settings(BaseSettings):
     dirs: PathSettings = PathSettings()
     hltv: HLTVSettings = HLTVSettings()
+
+    default_filename_delimiter: str = '-'
+
+
+settings = Settings()

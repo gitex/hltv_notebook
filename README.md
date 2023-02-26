@@ -1,6 +1,6 @@
 # HLTV Data Analysis
 
-[Main notebook](./notebooks/matches.ipynb)
+[Main notebook](notebooks/analyze/matches.ipynb)
 
 ## TODO
 

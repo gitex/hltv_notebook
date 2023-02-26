@@ -1,8 +1,8 @@
 import click
 from dependency_injector.wiring import Provide, inject
 
-from containers import DownloadMatchesContainer
-from services.download import DownloadMatchesService
+from api.containers import DownloadMatchesContainer
+from api.services import DownloadMatchesService
 from settings import Settings
 
 
