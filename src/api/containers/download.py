@@ -4,7 +4,7 @@ from infra.hltv_client import RequestsHTTPClient
 from infra.hltv_client import HLTVClient
 from infra.storage.choices import DataType
 from api.services.download import DownloadMatchesService
-from infra.storage.repositories import HtmlRepository
+from infra.storage.repositories import CsvRepository
 from infra.storage.formatters import HtmlToCsv
 from settings import Settings
 
@@ -24,7 +24,7 @@ class DownloadMatchesContainer(containers.DeclarativeContainer):
     )
 
     repository = providers.Factory(
-        HtmlRepository,
+        CsvRepository,
         context=config.dirs.data,
         data_type=DataType.MATCHES,
     )

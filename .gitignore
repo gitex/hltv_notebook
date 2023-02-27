@@ -1,3 +1,5 @@
+.env
+
 # Pytest
 .pytest_cache/
 
@@ -6,11 +8,3 @@
 
 # Venv
 venv/
-
-# Data
-data/html/matches/*
-!data/html/matches/.gitkeep
-data/html/players/*
-!data/html/players/.gitkeep
-data/html/teams/*
-!data/html/teams/.gitkeep

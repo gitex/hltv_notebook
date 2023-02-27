@@ -8,6 +8,8 @@ from infra.storage.structs import Identifier, Filename
 
 class BaseFileRepository(IRepository):
     extension: str = NotImplemented
+    newline: str = NotImplemented
+    encoding: str = 'utf-8'
 
     @property
     def _target_path(self) -> Path:
@@ -44,14 +46,16 @@ class BaseFileRepository(IRepository):
         )
 
         path = self._target_path / str(filename)
-        path.write_text(data)
+        path.write_text(data, newline=self.newline, encoding=self.encoding)
 
         return Identifier(path.stem)
 
 
 class HtmlRepository(BaseFileRepository):
     extension = 'html'
+    newline = '\n'
 
 
 class CsvRepository(BaseFileRepository):
     extension = 'csv'
+    newline = ''

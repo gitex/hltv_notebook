@@ -32,7 +32,7 @@ class Filename:
         return str(self)
 
     @classmethod
-    def generate_on_current_datetime(cls, extension: str, suffix: str = '', delimiter: str = '-') -> 'Filename':
+    def generate_on_current_datetime(cls, extension: str, suffix: str = '', delimiter: str = '_') -> 'Filename':
         name = generate_filename_on_current_datetime(delimiter)
 
         if suffix:

@@ -19,7 +19,5 @@ class Settings(BaseSettings):
     dirs: PathSettings = PathSettings()
     hltv: HLTVSettings = HLTVSettings()
 
-    default_filename_delimiter: str = '-'
-
 
 settings = Settings()

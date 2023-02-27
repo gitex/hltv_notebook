@@ -6,6 +6,7 @@ beautifulsoup4
 click
 dependency-injector>=4.0,<5.0
 pydantic
+python-dotenv==1.0.0
 jupyter
 lxml
 pytest

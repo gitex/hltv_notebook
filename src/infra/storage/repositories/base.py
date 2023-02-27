@@ -9,7 +9,7 @@ from infra.storage.structs import Identifier
 class IRepository:
     def __init__(self, context: URI | Path, data_type: DataType):
         self.context = context
-        self.data_type = data_type.value
+        self.data_type = str(data_type.value)
 
     def prepare(self) -> SuccessMessage: ...
 
