@@ -1,7 +1,9 @@
-from typing import NewType
+from typing import NewType, Callable, Any
 
-from .hltv_client.http_client.stubs import Html
+import pandas as pd
 
 
+Html = NewType('Html', str)
 CSV = NewType('CSV', str)
-URI = NewType('URI', str)
+URI = NewType('URI', str)  # A type variable used to indicate a Uniform Resource Identifier string.
+

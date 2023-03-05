@@ -8,13 +8,39 @@ from .exceptions import PipelineException
 
 
 class Handler(abc.ABC):
-    depends_on: Type[Self] | None
+    """ A handler that handles a DataFrame.
+
+    Handlers are used to process a DataFrame in a pipeline.
+    Handlers can depend on other handlers, which will be executed before the handler itself.
+    """
+
+    depends_on: Type[Self] | None  # Depends on another handler
 
     @abc.abstractmethod
-    def handle(self, df: pd.DataFrame) -> pd.DataFrame: ...
+    def handle(self, df: pd.DataFrame) -> pd.DataFrame:
+        """ Handles a DataFrame. """
+        ...
 
     @classmethod
     def dependencies(cls) -> list[Type['Handler']]:
+        """ Returns a list of dependencies for the handler.
+
+        The list is ordered from the lest dependent handler to the most dependent.
+
+
+        Example:
+            class A(Handler):
+                pass
+
+            class B(Handler):
+                depends_on = A
+
+            class C(Handler):
+                depends_on = B
+
+            C.dependencies() -> [A, B]
+        """
+
         handlers: list[Type[Handler]] = []
 
         if not cls.depends_on:
@@ -40,6 +66,25 @@ class Pipeline:
     __dependencies_filled: bool = field(init=False, default=False)
 
     def fill_dependencies(self) -> None:
+        """ Fills the pipeline with dependencies.
+
+        The pipeline will be filled with dependencies in the order of the least dependent handler to the most dependent.
+
+        Example:
+            class A(Handler):
+                pass
+
+            class B(Handler):
+                depends_on = A
+
+            class C(Handler):
+                depends_on = B
+
+            pipeline = Pipeline([C, A])
+            pipeline.fill_dependencies()
+            pipeline.handlers -> [A, B, C]
+        """
+
         handlers: list[Type[Handler]] = []
 
         for handler in self.handlers:
@@ -57,6 +102,8 @@ class Pipeline:
         self.__dependencies_filled = True
 
     def handle(self, df: pd.DataFrame) -> pd.DataFrame:
+        """ Handles a DataFrame. """
+
         if not self.__dependencies_filled:
             raise PipelineException('Pipeline should be fill with dependencies.')
 

@@ -10,7 +10,7 @@ from ..stubs import Html
 
 
 def generate_filename_on_current_datetime(delimiter: str = '-') -> str:
-    """ Generate filename based on current datetime. """
+    """ Generate filename on current datetime. """
 
     now = datetime.utcnow()
 
@@ -24,15 +24,3 @@ def clear_extension(extension: str) -> str:
     """ Clear extension from dots. """
 
     return extension.strip(EXTENSION_DELIMITER)
-
-
-def df_from_html(html: Html) -> pd.DataFrame | None:
-    if not html:
-        return None
-
-    try:
-        df = pd.read_html(html)
-    except ParseError:
-        return None
-
-    return pd.concat(df)

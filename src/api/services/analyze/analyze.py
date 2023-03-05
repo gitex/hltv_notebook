@@ -1,10 +1,12 @@
 from dataclasses import dataclass
+from typing import Callable
 
 import pandas as pd
 
 from infra.storage.repositories import IRepository
 from infra.storage.structs import Identifier
-from infra.storage.factories import DataFrameFactory
+from infra.storage.factories.data_frame import IDataFrameFactory
+
 from .pipeline import Pipeline
 
 
@@ -12,12 +14,13 @@ from .pipeline import Pipeline
 class AnalyzeService:
     repository: IRepository
     pipeline: Pipeline
+    df_factory: IDataFrameFactory
 
     def collect_all(self) -> pd.DataFrame | None:
         data_frames: list[pd.DataFrame] = []
 
-        for html in self.repository.get_many():
-            df = DataFrameFactory.from_html(html)
+        for data in self.repository.get_many():
+            df = self.df_factory(data)
 
             if df is None:
                 continue
@@ -29,8 +32,8 @@ class AnalyzeService:
         return pd.concat(data_frames)
 
     def collect_one(self, identifier: Identifier) -> pd.DataFrame | None:
-        html = self.repository.get_one(identifier)
+        data = self.repository.get_one(identifier)
 
-        if not html:
+        if not data:
             return None
-        return DataFrameFactory.from_html(html)
+        return self.df_factory(data)
