@@ -3,7 +3,8 @@ import re
 import pandas as pd
 
 from .base import Handler
-from api.services.analyze.utils import make_column, score_is_final
+from api.services.analyze.utils import make_column
+from domain.matches.value_objects import Score
 
 
 class C:
@@ -43,8 +44,13 @@ class CreateWinLoseColumns(Handler):
     depends_on = CreateScoreColumns
 
     def handle(self, df: pd.DataFrame) -> pd.DataFrame:
-        df[C.Team1Won] = df[C.Team1Score].map(score_is_final)
-        df[C.Team2Won] = df[C.Team2Score].map(score_is_final)
+        columns = (
+            (C.Team1Won, C.Team1Score),
+            (C.Team2Won, C.Team2Score),
+        )
+
+        for new_column, score_column in columns:
+            df[new_column] = df[score_column].map(lambda x: Score(x).is_final())
 
         return df
 

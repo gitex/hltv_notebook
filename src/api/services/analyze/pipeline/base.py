@@ -40,16 +40,18 @@ class Pipeline:
     __dependencies_filled: bool = field(init=False, default=False)
 
     def fill_dependencies(self) -> None:
-        handlers: set[Type[Handler]] = set()
+        handlers: list[Type[Handler]] = []
 
         for handler in self.handlers:
             if handler in handlers:
                 continue
 
-            for dependency in handler.dependencies():
-                handlers.add(dependency)
+            dependencies = handler.dependencies()
+            for dependency in dependencies:
+                if dependency not in handlers:
+                    handlers.append(dependency)
 
-            handlers.add(handler)
+            handlers.append(handler)
 
         self.handlers = list(handlers)
         self.__dependencies_filled = True
@@ -59,6 +61,6 @@ class Pipeline:
             raise PipelineException('Pipeline should be fill with dependencies.')
 
         for handler in self.handlers:
-            df = handler(df)
+            df = handler().handle(df)
 
         return df

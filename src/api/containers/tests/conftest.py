@@ -1,6 +1,7 @@
 import pytest
 
 from api.containers import analyze_container as original_analyze_container
+from infra.storage.tests.conftest import *  # noqa
 
 
 @pytest.fixture
