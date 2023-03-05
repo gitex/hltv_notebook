@@ -13,6 +13,13 @@ class Score(ValueObject):
 
     value: int
 
+    def __post_init__(self):
+        if not isinstance(self.value, int):
+            raise TypeError('Score should be integer type.')
+
+        if self.value < 0:
+            raise ValueError('Score should be positive.')
+
     def is_final(self) -> bool:
         """ Score is final and game can be finished here.
 

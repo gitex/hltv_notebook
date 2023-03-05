@@ -4,7 +4,7 @@ from uuid import uuid4
 import pytest
 import pandas as pd
 
-from infra.storage import HtmlRepository, DataType
+from infra.storage import HtmlRepository, CsvRepository, DataType
 from infra.storage.structs import Filename
 from infra.hltv_client.http_client import Response, Html
 from infra.stubs import CSV
@@ -109,6 +109,11 @@ def make_html_files_of_matches(matches_dir, matches_html) -> list[Path]:
 @pytest.fixture(scope='session')
 def matches_html_repository(data_dir) -> HtmlRepository:
     return HtmlRepository(context=data_dir, data_type=DataType.MATCHES)
+
+
+@pytest.fixture(scope='session')
+def matches_csv_repository(data_dir) -> CsvRepository:
+    return CsvRepository(context=data_dir, data_type=DataType.MATCHES)
 
 
 @pytest.fixture

@@ -42,7 +42,7 @@ class DataFrameFromCSVFactory(IDataFrameFactory, CsvMixin):
             return pd.DataFrame()
 
         try:
-            data = StringIO(data)
+            data = StringIO(data)  # StringIO is a file-like object
         except TypeError:
             return None
 

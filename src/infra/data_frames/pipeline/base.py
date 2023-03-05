@@ -1,5 +1,5 @@
 import abc
-from typing import Self, Type, NewType
+from typing import Self, Type, TypeVar
 from dataclasses import dataclass, field
 
 import pandas as pd
@@ -59,9 +59,12 @@ class Handler(abc.ABC):
         return hash(self.__class__.__name__)
 
 
+Handlers = TypeVar('Handlers', bound=list[Type[Handler]])
+
+
 @dataclass
 class Pipeline:
-    handlers: list[Type[Handler]]
+    handlers: Handlers
 
     __dependencies_filled: bool = field(init=False, default=False)
 
@@ -71,30 +74,37 @@ class Pipeline:
         The pipeline will be filled with dependencies in the order of the least dependent handler to the most dependent.
 
         Example:
-            class A(Handler):
-                pass
+            >>> class A(Handler):
+            >>>     pass
 
-            class B(Handler):
-                depends_on = A
+            >>> class B(Handler):
+            >>>     depends_on = A
 
-            class C(Handler):
-                depends_on = B
+            >>> class C(Handler):
+            >>>     depends_on = B
 
-            pipeline = Pipeline([C, A])
-            pipeline.fill_dependencies()
-            pipeline.handlers -> [A, B, C]
+            >>> pipeline = Pipeline([C, A])
+            >>> pipeline.fill_dependencies()
+            >>> pipeline.handlers
+            [A, B, C]
         """
 
-        handlers: list[Type[Handler]] = []
+        if self.__dependencies_filled:
+            return
+
+        handlers: Handlers = []
 
         for handler in self.handlers:
             if handler in handlers:
                 continue
 
             dependencies = handler.dependencies()
+
             for dependency in dependencies:
-                if dependency not in handlers:
-                    handlers.append(dependency)
+                if dependency in handlers:
+                    continue
+
+                handlers.append(dependency)
 
             handlers.append(handler)
 
@@ -104,10 +114,40 @@ class Pipeline:
     def handle(self, df: pd.DataFrame) -> pd.DataFrame:
         """ Handles a DataFrame. """
 
-        if not self.__dependencies_filled:
-            raise PipelineException('Pipeline should be fill with dependencies.')
+        self.validate()
 
         for handler in self.handlers:
             df = handler().handle(df)
 
         return df
+
+    @classmethod
+    def fill_from(cls, handlers: Handlers) -> 'Pipeline':
+        """ Fills the pipeline with dependencies.
+
+        Example:
+            >>> class A(Handler):
+            >>>    pass
+
+            >>> class B(Handler):
+            >>>    depends_on = A
+
+            >>> pipeline = Pipeline.fill_from([B])
+            >>> pipeline.handlers
+            [A, B]
+        """
+
+        pipeline = cls(handlers)
+        pipeline.fill_dependencies()
+        pipeline.validate()
+        return pipeline
+
+    def validate(self) -> None:
+        """ Validates the pipeline dependencies.
+
+        Raises:
+            PipelineException: If the pipeline has a dependency cycle.
+        """
+
+        if self.handlers and not self.__dependencies_filled:
+            raise PipelineException(f'Pipeline dependencies should be filled.')

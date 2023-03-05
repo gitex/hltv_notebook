@@ -2,9 +2,9 @@ from dependency_injector import providers, containers
 
 from infra.storage import DataType, CsvRepository
 from infra.storage.factories import *  # noqa
-from api.services import AnalyzeService
+from api.services import DataFramePipelineService
 from settings import Settings
-from api.services.analyze.pipeline.matches import *  # noqa
+from infra.data_frames.pipeline import *  # noqa
 
 
 class AnalyzeMatchesContainer(containers.DeclarativeContainer):
@@ -21,20 +21,25 @@ class AnalyzeMatchesContainer(containers.DeclarativeContainer):
         data_type=DataType.MATCHES,
     )
 
-    pipeline = providers.List([
-        ClearColumnsFromHyphens,
-        CreateWinLoseColumns,
-        FilterCompletedGamesColumn,
-        CreateWinnerColumn,
-        ClearTeams,
-    ])
+    pipeline = providers.Factory(
+        Pipeline.fill_from,
+        handlers=[
+            StripColumnName,
+            ClearColumnsFromHyphens,
+            CreateWinLoseColumns,
+            FilterCompletedGamesColumn,
+            CreateWinnerColumn,
+            ClearTeams,
+            SplitByTeams,
+        ],
+    )
 
     df_factory = providers.Factory(
         DataFrameFromCSVFactory,
     )
 
     service = providers.Factory(
-        AnalyzeService,
+        DataFramePipelineService,
         repository=repository,
         pipeline=pipeline,
         df_factory=df_factory,

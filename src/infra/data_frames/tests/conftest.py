@@ -3,7 +3,7 @@ from typing import Type
 import pytest
 import pandas as pd
 
-from api.services.analyze.pipeline import Handler
+from infra.data_frames.pipeline import Handler
 
 
 @pytest.fixture
