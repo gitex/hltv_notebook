@@ -21,3 +21,19 @@ def test_composite_factory_returns_none_if_any_factory_returns_none(a_factory, b
     composite_factory = CompositeFactory([a_factory, B, c_factory])
 
     assert composite_factory('') is None
+
+
+def test_composite_factory_with_no_fixtures_returns_input_data():
+    composite_factory = CompositeFactory([])
+
+    assert composite_factory('') == ''
+
+
+def test_composite_factory_with_one_fixture_returns_input_data():
+    class A(IFactory):
+        def __call__(self, data: str) -> str:
+            return data
+
+    composite_factory = CompositeFactory([A])
+
+    assert composite_factory('') == ''

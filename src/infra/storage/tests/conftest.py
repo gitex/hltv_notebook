@@ -2,10 +2,13 @@ from pathlib import Path
 from uuid import uuid4
 
 import pytest
+import pandas as pd
 
 from infra.storage import HtmlRepository, DataType
 from infra.storage.structs import Filename
 from infra.hltv_client.http_client import Response, Html
+from infra.stubs import CSV
+from infra.storage.constants import CSV_DELIMITER
 
 
 @pytest.fixture(scope='session')
@@ -116,3 +119,20 @@ def mock_repository(mocker):
 @pytest.fixture
 def secret_code() -> str:
     return str(uuid4())
+
+
+@pytest.fixture(scope='session')
+def csv_headers() -> list:
+    return ['a', 'b', 'c']
+
+
+@pytest.fixture(scope='session')
+def csv_values() -> list[list]:
+    return [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+
+
+@pytest.fixture(scope='session')
+def csv(csv_headers, csv_values) -> CSV:
+    df = pd.DataFrame(csv_values, columns=csv_headers)
+
+    return CSV(df.to_csv(index=False, sep=',', encoding='utf-8', header=True))

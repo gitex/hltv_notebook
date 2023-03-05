@@ -6,7 +6,7 @@ def test_collect_folder_with_empty_files(analyze_container, mock_repository):
 
     with analyze_container.repository.override(mock_repository):
         service = analyze_container.service()
-        assert service.collect_all() is None
+        assert service.collect_all().empty
 
 
 def test_collect_folder_without_files(analyze_container, mock_repository):

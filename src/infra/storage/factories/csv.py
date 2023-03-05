@@ -17,4 +17,10 @@ class CSVFromDataFrameFactory(ICSVFactory):
     """ A factory that creates CSV from a DataFrame. """
 
     def __call__(self, data: pd.DataFrame) -> CSV | None:
+        if not isinstance(data, pd.DataFrame):
+            return None
+
+        if data.empty:
+            return CSV('')
+
         return CSV(data.to_csv(index=False, sep=CSV_DELIMITER))
