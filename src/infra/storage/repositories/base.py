@@ -42,9 +42,11 @@ class IRepository:
 
         Returns a list of objects.
         """
+        ...
 
     def create(self, data: T, page: str = None) -> Identifier:
         """ Creates a new record in the repository using the provided data.
 
         Returns an identifier that can be used to retrieve the record later.
         """
+        ...

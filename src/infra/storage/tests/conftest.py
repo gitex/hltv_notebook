@@ -9,16 +9,57 @@ from infra.hltv_client.http_client import Response, Html
 
 
 @pytest.fixture(scope='session')
-def example_dir() -> Path:
-    return Path(__file__).parent / 'examples'
-
-
-@pytest.fixture(scope='session')
-def matches_html(example_dir) -> Html:
-    with open(example_dir / 'matches.html') as f:
-        html = f.read()
-
-    return Html(html)
+def matches_html() -> Html:
+    return Html(
+        """
+        <html>
+        <head>
+            <title>Matches - HLTV.org</title>
+        </head>
+        <body>
+        
+            <table>
+                <thead>
+                    <tr>
+                        <th>Match id</th>
+                        <th>Event</th>
+                        <th>Map</th>
+                        <th>Team 1</th>
+                        <th>Team 2</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="matchstats-id"><a href="/matches/2342497/heroic-vs-g2-blast-premier-spring-showdown-2021"><span class="match-id" data-zonedgrouping-entry-unix="1619594400000">2342497</span></a></td>
+                        <td><a href="/events/5812/blast-premier-spring-showdown-2021"><img src="https://static.hltv.org/images/eventLogos/000/005/812/medium/BUcXrJ7VIAE6rD_.png" title="BLAST Premier Spring Showdown 2021"></a></td>
+                        <td><a href="/maps/19235/nuke">Nuke</a></td>
+                        <td class="team-cell"><a href="/team/7175/heroic"><img src="https://static.hltv.org/images/team/logo/7175" alt="Heroic" title="Heroic" class="logo"></a></td>
+                        <td class="team-cell"><a href="/team/5995/g2"><img src="https://static.hltv.org/images/team/logo/5995" alt="G2" title="G2" class="logo"></a></td>
+                        <td><div class="won">16-14</div></td>
+                    </tr>
+                    <tr>
+                        <td class="matchstats-id"><a href="/matches/2342494/liquid-vs-virtuspro-iem-summer-2021-north-america-qualifier"><span class="match-id" data-zonedgrouping-entry-unix="1619578200000">2342494</span></a></td>
+                        <td><a href="/events/5833/iem-summer-2021-north-america-qualifier"><img src="https://static.hltv.org/images/eventLogos/000/005/833/medium/PypzbZb.png" title="IEM Summer 2021 North America Qualifier"></a></td>
+                        <td><a href="/maps/19235/nuke">Nuke</a></td>
+                        <td class="team-cell"><a href="/team/5973/liquid"><img src="https://static.hltv.org/images/team/logo/5973" alt="Liquid" title="Liquid" class="logo"></a></td>
+                        <td class="team-cell"><a href="/team/5378/virtuspro"><img src="https://static.hltv.org/images/team/logo/5378" alt="Virtus.pro" title="Virtus.pro" class="logo"></a></td>
+                        <td><div class="lost">7-16</div></td>
+                    </tr>
+                    <tr>
+                        <td class="matchstats-id"><a href="/matches/2342493/liquid-vs-virtuspro-iem-summer-2021-north-america-qualifier"><span class="match-id" data-zonedgrouping-entry-unix="1619578200000">2342493</span></a></td>
+                        <td><a href="/events/5833/iem-summer-2021-north-america-qualifier"><img src="https://static.hltv.org/images/eventLogos/000/005/833/medium/PypzbZb.png" title="IEM Summer 2021 North America Qualifier"></a></td>
+                        <td><a href="/maps/19235/nuke">Nuke</a></td>
+                        <td class="team-cell"><a href="/team/5973/liquid"><img src="https://static.hltv.org/images/team/logo/5973" alt="Liquid" title="Liquid" class="logo"></a></td>
+                        <td class="team-cell"><a href="/team/5378/virtuspro"><img src="https://static.hltv.org/images/team/logo/5378" alt="Virtus.pro" title="Virtus.pro" class="logo"></a></td>
+                        <td><div class="lost">7-16</div></td>
+                    </tr>
+                </tbody>
+            </table>
+        </body>
+        </html>                         
+        """.strip('\n').strip()
+    )
 
 
 @pytest.fixture
