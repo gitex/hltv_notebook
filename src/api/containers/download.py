@@ -30,7 +30,7 @@ class DownloadMatchesContainer(containers.DeclarativeContainer):
 
     repository = providers.Factory(
         CsvRepository,
-        context=config.dirs.data,
+        context=config.dirs.csv_matches,
         data_type=DataType.MATCHES,
     )
 

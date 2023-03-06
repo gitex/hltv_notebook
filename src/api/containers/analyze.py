@@ -7,7 +7,7 @@ from settings import Settings
 from infra.data_frames.pipeline import *  # noqa
 
 
-class AnalyzeMatchesContainer(containers.DeclarativeContainer):
+class LoadOriginalMatchesContainer(containers.DeclarativeContainer):
     """ A container that provides the AnalyzeService for matches.
 
     The container is responsible for providing the AnalyzeService with all of its dependencies.
@@ -17,7 +17,7 @@ class AnalyzeMatchesContainer(containers.DeclarativeContainer):
 
     repository = providers.Factory(
         CsvRepository,
-        context=config.dirs.data,
+        context=config.dirs.csv_matches,
         data_type=DataType.MATCHES,
     )
 

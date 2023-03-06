@@ -14,24 +14,21 @@ class BaseFileRepository(IRepository):
     newline: str = NotImplemented  # The newline character to use when writing files.
     encoding: str = 'utf-8'
 
-    @property
-    def _target_path(self) -> Path:
-        """ Returns the path to the directory where the files are stored. """
-        return Path(self.context) / self.extension / self.data_type
-
     def _find_in_target_path(self, identifier: str) -> list[Path]:
         """ Returns a list of files that match the given identifier."""
-        return list(self._target_path.glob(f'{identifier}.{self.extension}'))
+
+        return list(self.context.glob(f'{identifier}.{self.extension}'))
 
     def prepare(self) -> SuccessMessage:
         """ Create directory if it doesn't exist. """
 
-        self._target_path.mkdir(parents=True, exist_ok=True)
-        return SuccessMessage(f'Directory {self._target_path} was created successfully!')
+        self.context.mkdir(parents=True, exist_ok=True)
+        return SuccessMessage(f'Directory {self.context} was created successfully!')
 
     def get_one(self, identifier: Identifier) -> Html | None:
         """ Returns the file content if it exists. """
-        files = self._target_path.glob(f'{identifier}.{self.extension}')
+
+        files = self.context.glob(f'{identifier}.{self.extension}')
 
         try:
             return Html(next(files).read_text())
@@ -40,7 +37,7 @@ class BaseFileRepository(IRepository):
 
     def get_many(self) -> list[Html]:
         """ Return content of all files."""
-        files = self._target_path.glob(f'*.{self.extension}')
+        files = self.context.glob(f'*.{self.extension}')
 
         return [Html(path.read_text()) for path in files]
 
@@ -52,7 +49,7 @@ class BaseFileRepository(IRepository):
             suffix=page,
         )
 
-        path = self._target_path / str(filename)
+        path = self.context / str(filename)
         path.write_text(data, newline=self.newline, encoding=self.encoding)
 
         return Identifier(path.stem)

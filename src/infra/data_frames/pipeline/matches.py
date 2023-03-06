@@ -53,8 +53,8 @@ class CreateScoreColumns(Handler):
     def handle(self, df: pd.DataFrame) -> pd.DataFrame:
         pattern = re.compile(r'\((\d+)\)$')
 
-        df = make_column(df, column_name=C.Team1Score, on_column=C.Team1, pattern=pattern)
-        df = make_column(df, column_name=C.Team2Score, on_column=C.Team2, pattern=pattern)
+        for team_column, team_score_column in [(C.Team1, C.Team1Score), (C.Team2, C.Team2Score)]:
+            df[team_score_column] = df[team_column].str.extract(pattern, expand=False).astype(int)
 
         return df
 
@@ -81,12 +81,14 @@ class CreateWinLoseColumns(Handler):
         )
 
         for new_column, score_column in columns:
-            df[new_column] = df[score_column].map(lambda x: Score(int(x)).is_final())
+            df[new_column] = df[score_column].map(lambda x: Score(int(x)).is_final()).astype(bool)
 
         return df
 
 
 class FilterCompletedGamesColumn(Handler):
+    """ Filter out games that are completed."""
+
     depends_on = CreateWinLoseColumns
 
     def handle(self, df: pd.DataFrame) -> pd.DataFrame:
