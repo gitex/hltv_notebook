@@ -31,6 +31,7 @@ class LoadOriginalMatchesContainer(containers.DeclarativeContainer):
             CreateWinnerColumn,
             ClearTeams,
             SplitByTeams,
+            CleanMaps,
         ],
     )
 

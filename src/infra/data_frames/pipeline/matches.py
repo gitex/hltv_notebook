@@ -17,6 +17,13 @@ class C:
     Winner = 'Winner'
     GameCompleted = 'Game Completed'
     Map = 'Map'
+    IsWinner = 'Is Winner'
+    Team = 'Team'
+    Score = 'Score'
+    Opponent = 'Opponent'
+    OpponentScore = 'Opponent Score'
+    Date = 'Date'
+    Event = 'Event'
 
 
 class StripColumnName(Handler):
@@ -68,6 +75,7 @@ class ClearTeams(Handler):
 
         for column in [C.Team1, C.Team2]:
             df = make_column(df, column_name=column, on_column=column, pattern=pattern)
+            df[column] = df[column].str.strip()
 
         return df
 
@@ -152,10 +160,10 @@ class SplitByTeams(Handler):
         for part in initial_columns:
             part_df = df[list(part)]
             part_df.rename(columns=dict(zip(part, new_columns)), inplace=True)
-            part_df['Is Winner'] = part_df['Team'] == part_df['Winner']
+            part_df[C.IsWinner] = part_df['Team'] == part_df[C.Winner]
             new_df = pd.concat([new_df, part_df], ignore_index=True)
 
-        del new_df['Winner']
+        del new_df[C.Winner]
         return new_df
 
 
@@ -173,3 +181,20 @@ class RemoveAllColumnsExcept(Handler):
                 raise ValueError(f'Column {column} not in data frame.')
 
         return df.loc[:, self.columns]
+
+
+class CleanMaps(Handler):
+    """ Clean the map column.
+
+    This is a workaround for a bug in the data source.
+    """
+
+    depends_on = None
+
+    def handle(self, df: pd.DataFrame) -> pd.DataFrame:
+        pattern = re.compile(r'\w+\s{2}(.*)')
+
+        df = make_column(df, column_name=C.Map, on_column=C.Map, pattern=pattern)
+        df[C.Map] = df[C.Map].str.strip()
+
+        return df
