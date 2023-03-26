@@ -16,6 +16,7 @@ class C:
     Team2Won = 'Team2 Won'
     Winner = 'Winner'
     GameCompleted = 'Game Completed'
+    Map = 'Map'
 
 
 class StripColumnName(Handler):
@@ -156,3 +157,19 @@ class SplitByTeams(Handler):
 
         del new_df['Winner']
         return new_df
+
+
+class RemoveAllColumnsExcept(Handler):
+    """ Remove all columns except the ones specified. """
+
+    depends_on = None
+
+    def __init__(self, columns: tuple):
+        self.columns = columns
+
+    def handle(self, df: pd.DataFrame) -> pd.DataFrame:
+        for column in self.columns:
+            if column not in df.columns:
+                raise ValueError(f'Column {column} not in data frame.')
+
+        return df.loc[:, self.columns]

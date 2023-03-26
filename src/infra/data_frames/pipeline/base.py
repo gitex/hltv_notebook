@@ -116,8 +116,13 @@ class Pipeline:
 
         self.validate()
 
-        for handler in self.handlers:
-            df = handler().handle(df)
+        for handler_type in self.handlers:
+            if callable(handler_type):
+                handler = handler_type()
+            else:
+                handler = handler_type
+
+            df = handler.handle(df)
 
         return df
 
